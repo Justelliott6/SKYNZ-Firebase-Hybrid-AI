@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>SKYNZ | Launch Canvas</title></head>
+<body>
+<header><strong>SKYNZ</strong><span>Firebase Hybrid AI Edition</span></header>
+<main>
+<section aria-labelledby="intro">
+<h1 id="intro">Launch Canvas</h1>
+<p>Tell Lippy what you’re launching, then edit and save your creator page.</p>
+<form id="generate">
+<label for="brief">Creator brief</label>
+<textarea id="brief" required maxlength="1800" rows="5" placeholder="Describe your work, audience and the action you want visitors to take."></textarea>
+<button id="example" type="button" class="quiet">Try a sample brief</button>
+<label for="route">Where AI runs</label>
+<select id="route"><option value="device">Gemini Nano · on device only</option><option value="hybrid">Firebase · on device with cloud fallback</option><option value="ollama">Ollama · local CPU</option></select>
+<label id="consent-row" hidden><input id="consent" type="checkbox"> Allow this brief to go to Firebase if local inference is unavailable</label>
+<label id="model-row" hidden>Installed Ollama model <select id="model"></select><button id="refresh" type="button" class="quiet">Refresh models</button></label>
+<p id="setup"></p>
+<button id="run">Generate draft</button>
+</form>
+</section>
+<section aria-labelledby="editor-heading">
+<h2 id="editor-heading">Page editor</h2>
+<form id="editor">
+<label>Title<input name="title" required maxlength="80"></label>
+<label>Tagline<input name="tagline" required maxlength="140"></label>
+<label>About<textarea name="about" required maxlength="650" rows="4"></textarea></label>
+<label>Call to action<input name="action" required maxlength="44"></label>
+<label>Palette<select name="palette"><option value="violet">Violet</option><option value="ocean">Ocean</option><option value="ember">Ember</option><option value="paper">Paper</option></select></label>
+<div class="actions"><button>Save on this device</button><button id="restore" type="button" class="quiet">Reopen saved page</button><button id="export" type="button" class="quiet">Export page JSON</button></div>
+</form>
+</section>
+<article id="preview" aria-labelledby="page-title">
+<p>Live preview</p><h2 id="page-title">Your page title</h2><p id="page-tagline"></p><p id="page-about"></p><span id="page-action" hidden></span>
+</article>
+<p role="status" id="status"></p>
+</main>
+<script type="module" src="/src/main.js"></script>
+</body>
+</html>
