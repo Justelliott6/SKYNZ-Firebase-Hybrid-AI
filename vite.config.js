@@ -1,8 +1,8 @@
 import {defineConfig} from 'vite';
 import {createOllamaMiddleware} from './server/ollama.js';
 
-function install(server) {
-  server.middlewares.use(createOllamaMiddleware(server.config.preview.port));
+function install(server, port) {
+  server.middlewares.use(createOllamaMiddleware(port));
 }
 
 export default defineConfig({
@@ -10,7 +10,7 @@ export default defineConfig({
   preview: {host: '127.0.0.1', port: 4173, cors: false},
   plugins: [{
     name: 'local-ollama',
-    configureServer: install,
-    configurePreviewServer: install
+    configureServer(server) { install(server, server.config.server.port); },
+    configurePreviewServer(server) { install(server, server.config.preview.port); }
   }]
 });
