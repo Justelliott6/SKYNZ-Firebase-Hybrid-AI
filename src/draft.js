@@ -34,8 +34,9 @@ export function validateDraft(value) {
 export function lippyPrompt(brief) {
   return [
     'Lippy is helping a creator draft an original launch page. Use the creator brief as source material.',
-    'Return one JSON object with keys title (80 characters), tagline (140), about (650), action (44), and palette (violet, ocean, ember or paper).',
-    'Use plain text and no Markdown. Do not invent testimonials, links, dates, or credentials.',
+    'Return exactly one JSON object with these keys and string values: title, tagline, about, action, palette.',
+    'title must be 1-80 characters, tagline 1-140, about 1-650, action 1-44. palette must be exactly one of violet, ocean, ember, paper.',
+    'Return no Markdown fences, commentary, or extra keys. Do not invent testimonials, links, dates, or credentials.',
     'Creator brief: ' + JSON.stringify(brief)
   ].join('\n');
 }
@@ -45,9 +46,17 @@ export async function floaterDraft({brief, route, cloudConsent, model}, provider
   if (route === 'hybrid' && !cloudConsent) throw new Error('Allow cloud fallback for this draft first.');
   if (route === 'ollama' && !model) throw new Error('Select an installed Ollama model.');
   const result = await providers[route](lippyPrompt(brief), model);
-  const json = result.text.trim().replace(/^\x60\x60\x60(?:json)?\s*|\s*\x60\x60\x60$/gi, '');
-  let draft;
-  try { draft = validateDraft(JSON.parse(json)); }
-  catch { throw new Error((result.source || 'The selected AI engine') + ' returned an invalid structured draft. Your saved page is safe; try again.'); }
-  return {draft, source: result.source};
+  const json = String(result.text ?? '').trim().replace(/^\x60\x60\x60(?:json)?\s*|\s*\x60\x60\x60$/gi, '');
+  let value;
+  try {
+    value = JSON.parse(json);
+  } catch {
+    throw new Error((result.source || 'The selected AI engine') + ' returned text that was not valid JSON. Your saved page is safe; try again.');
+  }
+  try {
+    const draft = validateDraft(value);
+    return {draft, source: result.source};
+  } catch (error) {
+    throw new Error((result.source || 'The selected AI engine') + ' returned JSON that does not match the page fields. ' + error.message + ' Your saved page is safe; try again.');
+  }
 }
