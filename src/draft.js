@@ -109,11 +109,10 @@ export function validateDraft(value) {
     if (!enums[key].includes(valueAtKey)) throw new Error('Choose a supported ' + key + '.');
     result[key] = valueAtKey;
   }
-  for (const [index, key] of ['backgroundColor', 'textColor', 'accentColor'].entries()) {
+  for (const key of ['backgroundColor', 'textColor', 'accentColor']) {
     const color = String(value[key] ?? defaults[key]).trim();
-    // Models sometimes ignore the structured color constraint. Keep the selected palette
-    // and render a safe palette color instead of rejecting an otherwise usable AI draft.
-    result[key] = /^#[\da-fA-F]{6}$/.test(color) ? color.toLowerCase() : (palettes[result.palette] || palettes.violet)[index];
+    if (!/^#[\da-fA-F]{6}$/.test(color)) throw new Error('Use a six-digit hex color for ' + key + '.');
+    result[key] = color.toLowerCase();
   }
   result.artworkUrl = safeHttps(value.artworkUrl || '', 'artwork', true);
   result.actionUrl = safeHttps(value.actionUrl || '', 'button', true);
@@ -147,6 +146,10 @@ export async function floaterDraft({brief, route, cloudConsent, model}, provider
   let value;
   try { value = JSON.parse(json); }
   catch { throw new Error((response.source || 'The selected AI engine') + ' returned text that was not valid JSON. Your saved page is safe; try again.'); }
+  const colorDefaults = palettes[value.palette] || palettes.violet;
+  for (const [index, key] of ['backgroundColor', 'textColor', 'accentColor'].entries()) {
+    if (typeof value[key] !== 'string' || !/^#[\da-fA-F]{6}$/.test(value[key].trim())) value[key] = colorDefaults[index];
+  }
   try { return {draft: validateDraft(value), source: response.source}; }
   catch (error) { throw new Error((response.source || 'The selected AI engine') + ' returned a design that failed validation. ' + error.message + ' Your saved page is safe; try again.'); }
 }
