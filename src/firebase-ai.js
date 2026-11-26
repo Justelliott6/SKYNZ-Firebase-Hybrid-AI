@@ -56,7 +56,8 @@ export async function firebaseDraft(prompt, hybrid, progress) {
   if (hybrid) void initialize.catch(() => {});
   else await initialize;
   const {response} = await model.generateContent(prompt);
-  const source = {ON_DEVICE: 'Gemini Nano · on device', IN_CLOUD: 'Gemini · Firebase cloud'}[response.inferenceSource];
-  if (!hybrid && response.inferenceSource === 'IN_CLOUD') throw new Error('Unexpected cloud response.');
+  // The Firebase JS SDK exposes these as lowercase string values: "on_device" and "in_cloud".
+  const source = {on_device: 'Gemini Nano · on device', in_cloud: 'Gemini · Firebase cloud'}[response.inferenceSource];
+  if (!hybrid && response.inferenceSource === 'in_cloud') throw new Error('Unexpected cloud response.');
   return {text: response.text(), source: source ?? (hybrid ? 'Firebase · inference location unavailable' : 'Gemini Nano · on device')};
 }
