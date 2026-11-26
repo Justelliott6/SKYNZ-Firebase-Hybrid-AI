@@ -101,9 +101,10 @@ get('generate').addEventListener('submit', async event => {
     apply(result.draft);
     status('Draft ready · ' + result.source + '. Review it before saving.');
   } catch (error) {
+    console.error('SKYNZ Launch Canvas generation failed:', error);
     status(firebaseReady && route !== 'ollama' && !error.message.startsWith('AI returned') &&
       !(route === 'hybrid' && !cloudConsent)
-      ? 'Firebase generation failed. Check Chrome model availability and Firebase/App Check setup.'
+      ? 'Firebase generation failed: ' + error.message
       : error.message);
   } finally {
     generating = false;
