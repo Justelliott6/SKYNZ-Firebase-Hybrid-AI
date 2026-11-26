@@ -5,7 +5,7 @@ SKYNZ Launch Canvas turns a creator brief into an editable creator-page design. 
 - **Hosted baseline:** https://skynz-hybrid-ai-hackathon.web.app
 - **Demonstration:** https://youtu.be/K1SL3r7tBss
 - **Source:** https://github.com/Justelliott6/SKYNZ-Firebase-Hybrid-AI
-- **Experimental designer branch:** `experimental/ai-page-designer` (not merged or deployed)
+- **Expanded designer release:** custom page layouts, media, and styling are included in the current application.
 
 ## Run locally
 
@@ -37,15 +37,17 @@ To configure another test project:
 5. To test cloud inference directly, choose **Firebase � cloud only (direct)** and consent to Firebase processing the brief. The app displays the engine reported by Firebase for the response.
 6. To deploy a static build to a Firebase test project, run `npm run build` and use the Firebase CLI to deploy Hosting only. Authorize the hosted domain in the App Check key. Static hosting does not run the Ollama server.
 
-## AI Page Designer (experimental branch)
+## Expanded AI Page Designer
 
-The `experimental/ai-page-designer` branch extends the existing structured response and live preview. A design can specify the page composition (editorial, spotlight, grid, or split), background treatment, custom contrast colors, type style, widget placement and size, reduced-motion-aware animation, artwork URL, sections, call-to-action link, media, and a public livestream URL. The existing Gemini Nano, Firebase hybrid/cloud, and Ollama routes remain in the same application.
+The Launch Canvas generates structured creator-page designs from natural-language briefs. Lippy communicates with the creator; Floater routes each request to the selected interchangeable model; the design capability validates the response and renders it in the editor and live preview. Designs remain editable and can be saved locally, reopened, and exported as JSON.
 
-YouTube, Spotify, SoundCloud, and Twitch URLs are parsed and converted only into the providers' standard embed URLs. Website links render as links. OBS remains the creator's broadcasting application; the page provides a public YouTube/Twitch stream component that can display an OBS broadcast once it is sent to that provider. The page does not collect stream keys or run creator-supplied code.
+A design can specify layout, background, custom colors, typography, page sections and navigation, artwork, optional motion, and widget position, size, and appearance. Validated Spotify, YouTube, SoundCloud, and Twitch URLs render through provider embed URLs. Public YouTube or Twitch streams can be shown after OBS sends a creator's broadcast to that provider. The app does not handle stream keys or run AI-generated JavaScript.
 
-Before rendering or saving, page fields, colors, section counts, media-provider URLs, and stream URLs are validated. Arbitrary HTML or JavaScript is not accepted. Firebase processing still requires explicit consent. Local saves and JSON export include the full design; older saved text-and-palette pages are upgraded with default layout settings when reopened.
+The project owner reports a successful local generation using Ollama with Qwen3:4B. Ollama uses the local service at 127.0.0.1:11434. The Vite development server and preview bind to 127.0.0.1; the local adapter checks the request origin against the actual Vite listener port and rejects cross-site requests. Static Firebase Hosting does not expose or proxy local Ollama.
 
-The experimental branch is intentionally separate from the public deployment and Devpost submission. Its focused Node checks cover design normalization, media URL validation, URL rejection, and distinct layout configurations. A branch preview and real model-generated multi-brief review must be completed before merging or deploying it; no expanded-design Firebase inference result is claimed here.
+Gemini Nano, Firebase AI Logic hybrid inference, cloud-only inference, App Check, and consent remain available in the existing application. Firebase settings continue to come from local environment configuration and are not committed. The existing demonstration video remains unchanged and documents the original working version; this release adds the expanded designer afterward.
+
+Creator-owned direct publishing and unrestricted design generation are future platform capabilities. The current designer renders validated structured fields and safe provider embeds only.
 
 ## Verified baseline results
 
@@ -55,7 +57,7 @@ The project owner manually verified Gemini Nano on desktop Chrome with a new **M
 
 An independent run of **Firebase � on device with cloud fallback** in a separate browser session returned a valid structured creator page and reported **"Draft ready � Gemini � Firebase cloud."** The page was accepted into the editor and live preview, saved, restored after reload, and reopened successfully. The route is configured with Firebase AI Logic `PREFER_ON_DEVICE`, verifying cloud fallback when Nano was unavailable in that browser. No simulated responses were used.
 
-Ollama remains a separate local route. Its independent live inference was not retested during the Firebase deployment session.
+Ollama remains a separate local route. The project owner reports a successful local Qwen3:4B page-generation run; Ollama does not run in Firebase Hosting.
 
 - [Firebase hybrid Web setup](https://firebase.google.com/docs/ai-logic/hybrid/web/get-started)
 - [Firebase hybrid structured output](https://firebase.google.com/docs/ai-logic/hybrid/web/generate-structured-output)
