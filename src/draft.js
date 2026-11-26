@@ -42,8 +42,8 @@ export function lippyPrompt(brief) {
 }
 
 export async function floaterDraft({brief, route, cloudConsent, model}, providers) {
-  if (!['device', 'hybrid', 'ollama'].includes(route)) throw new Error('Choose an AI route.');
-  if (route === 'hybrid' && !cloudConsent) throw new Error('Allow cloud fallback for this draft first.');
+  if (!['device', 'hybrid', 'cloud', 'ollama'].includes(route)) throw new Error('Choose an AI route.');
+  if (['hybrid', 'cloud'].includes(route) && !cloudConsent) throw new Error('Allow Firebase processing for this draft first.');
   if (route === 'ollama' && !model) throw new Error('Select an installed Ollama model.');
   const result = await providers[route](lippyPrompt(brief), model);
   const json = String(result.text ?? '').trim().replace(/^\x60\x60\x60(?:json)?\s*|\s*\x60\x60\x60$/gi, '');
