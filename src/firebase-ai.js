@@ -1,6 +1,6 @@
 import {initializeApp} from 'firebase/app';
 import {initializeAppCheck, ReCaptchaEnterpriseProvider} from 'firebase/app-check';
-import {getAI, getGenerativeModel, GoogleAIBackend, InferenceMode} from 'firebase/ai';
+import {getAI, getGenerativeModel, GoogleAIBackend, InferenceMode, Schema} from 'firebase/ai';
 
 const env = import.meta.env;
 const config = {
@@ -8,6 +8,16 @@ const config = {
   appId: env.VITE_FIREBASE_APP_ID,
   projectId: env.VITE_FIREBASE_PROJECT_ID
 };
+
+const pageSchema = Schema.object({
+  properties: {
+    title: Schema.string(),
+    tagline: Schema.string(),
+    about: Schema.string(),
+    action: Schema.string(),
+    palette: Schema.enumString({enum: ['violet', 'ocean', 'ember', 'paper']})
+  }
+});
 
 export const firebaseReady = Object.values(config).every(Boolean) && Boolean(env.VITE_FIREBASE_APPCHECK_SITE_KEY);
 const models = new Map();
@@ -24,9 +34,21 @@ export async function firebaseDraft(prompt, hybrid, progress) {
       });
       ai = getAI(app, {backend: new GoogleAIBackend()});
     }
+    const cloudModel = env.VITE_FIREBASE_CLOUD_MODEL || 'gemini-3.5-flash-lite';
     models.set(hybrid, getGenerativeModel(ai, {
       mode: hybrid ? InferenceMode.PREFER_ON_DEVICE : InferenceMode.ONLY_ON_DEVICE,
-      ...(env.VITE_FIREBASE_CLOUD_MODEL && {inCloudParams: {model: env.VITE_FIREBASE_CLOUD_MODEL}})
+      onDeviceParams: {
+        promptOptions: {responseConstraint: pageSchema}
+      },
+      ...(hybrid && {
+        inCloudParams: {
+          model: cloudModel,
+          generationConfig: {
+            responseMimeType: 'application/json',
+            responseSchema: pageSchema
+          }
+        }
+      })
     }));
   }
   const model = models.get(hybrid);
