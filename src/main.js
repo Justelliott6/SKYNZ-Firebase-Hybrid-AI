@@ -70,13 +70,18 @@ async function ollama(prompt, model) {
 
 function updateRoute() {
   const route = get('route').value;
-  get('consent-row').hidden = route !== 'hybrid';
+  const firebaseRoute = route === 'hybrid' || route === 'cloud';
+  get('consent-row').hidden = !firebaseRoute;
   get('consent').checked = false;
   get('model-row').hidden = route !== 'ollama';
   if (route === 'ollama') void refreshModels();
-  else get('setup').textContent = firebaseReady
-    ? 'Use a supported Chrome installation with Gemini Nano enabled.'
-    : 'Firebase setup is required for this route. See the README or choose Ollama.';
+  else get('setup').textContent = !firebaseReady
+    ? 'Firebase setup is required for this route. See the README or choose Ollama.'
+    : route === 'cloud'
+      ? 'Firebase cloud inference will process this draft directly.'
+      : route === 'hybrid'
+        ? 'Gemini Nano is preferred; Firebase cloud is used if local inference is unavailable.'
+        : 'Use a supported Chrome installation with Gemini Nano enabled.';
 }
 
 get('generate').addEventListener('submit', async event => {
@@ -94,8 +99,9 @@ get('generate').addEventListener('submit', async event => {
   status('Lippy is drafting your page…');
   try {
     const result = await floaterDraft({brief, route, cloudConsent, model: get('model').value}, {
-      device: prompt => firebaseDraft(prompt, false, progress),
-      hybrid: prompt => firebaseDraft(prompt, true, progress),
+      device: prompt => firebaseDraft(prompt, 'device', progress),
+      hybrid: prompt => firebaseDraft(prompt, 'hybrid', progress),
+      cloud: prompt => firebaseDraft(prompt, 'cloud', progress),
       ollama
     });
     apply(result.draft);
@@ -103,7 +109,7 @@ get('generate').addEventListener('submit', async event => {
   } catch (error) {
     console.error('SKYNZ Launch Canvas generation failed:', error);
     status(firebaseReady && route !== 'ollama' && !error.message.startsWith('AI returned') &&
-      !(route === 'hybrid' && !cloudConsent)
+      !(['hybrid', 'cloud'].includes(route) && !cloudConsent)
       ? 'Firebase generation failed: ' + error.message
       : error.message);
   } finally {
