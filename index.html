@@ -12,8 +12,8 @@
 <textarea id="brief" required maxlength="1800" rows="5" placeholder="Describe your work, audience and the action you want visitors to take."></textarea>
 <button id="example" type="button" class="quiet">Try a sample brief</button>
 <label for="route">Where AI runs</label>
-<select id="route"><option value="device">Gemini Nano · on device only</option><option value="hybrid">Firebase · on device with cloud fallback</option><option value="ollama">Ollama · local CPU</option></select>
-<label id="consent-row" hidden><input id="consent" type="checkbox"> Allow this brief to go to Firebase if local inference is unavailable</label>
+<select id="route"><option value="device">Gemini Nano · on device only</option><option value="hybrid">Firebase · on device with cloud fallback</option><option value="cloud">Firebase · cloud only (direct)</option><option value="ollama">Ollama · local CPU</option></select>
+<label id="consent-row" hidden><input id="consent" type="checkbox"> Allow this brief to be processed by Firebase, including cloud inference</label>
 <label id="model-row" hidden>Installed Ollama model <select id="model"></select><button id="refresh" type="button" class="quiet">Refresh models</button></label>
 <p id="setup"></p>
 <button id="run">Generate draft</button>
