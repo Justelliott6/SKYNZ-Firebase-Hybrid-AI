@@ -7,7 +7,7 @@ const config = {apiKey: env.VITE_FIREBASE_API_KEY, appId: env.VITE_FIREBASE_APP_
 const oneOf = values => Schema.enumString({enum: values});
 const sectionSchema = Schema.object({properties: {heading: Schema.string(), body: Schema.string()}});
 const mediaSchema = Schema.object({properties: {provider: oneOf(['youtube', 'spotify', 'soundcloud', 'twitch', 'link']), label: Schema.string(), url: Schema.string()}});
-export const pageSchema = Schema.object({properties: {
+export const pageSchema = Schema.object({optionalProperties: ['artworkUrl', 'actionUrl', 'streamUrl', 'sections', 'media'], properties: {
   title: Schema.string(), tagline: Schema.string(), about: Schema.string(), action: Schema.string(),
   palette: oneOf(['violet', 'ocean', 'ember', 'paper']),
   layout: oneOf(['editorial', 'spotlight', 'grid', 'split']),
