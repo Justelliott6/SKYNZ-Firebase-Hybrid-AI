@@ -45,7 +45,7 @@ export async function floaterDraft({brief, route, cloudConsent, model}, provider
   if (route === 'hybrid' && !cloudConsent) throw new Error('Allow cloud fallback for this draft first.');
   if (route === 'ollama' && !model) throw new Error('Select an installed Ollama model.');
   const result = await providers[route](lippyPrompt(brief), model);
-  const json = result.text.trim().replace(/^\x60\x60\x60(?:json)?\\s*|\\s*\x60\x60\x60$/gi, '');
+  const json = result.text.trim().replace(/^\x60\x60\x60(?:json)?\s*|\s*\x60\x60\x60$/gi, '');
   let draft;
   try { draft = validateDraft(JSON.parse(json)); }
   catch { throw new Error((result.source || 'The selected AI engine') + ' returned an invalid structured draft. Your saved page is safe; try again.'); }
