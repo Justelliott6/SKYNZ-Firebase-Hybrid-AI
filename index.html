@@ -1,40 +1,73 @@
 <!doctype html>
 <html lang="en">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>SKYNZ | Launch Canvas</title></head>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="theme-color" content="#151320"><title>SKYNZ | Launch Canvas</title></head>
 <body>
 <header><strong>SKYNZ</strong><span>Firebase Hybrid AI Edition</span></header>
 <main>
-<section aria-labelledby="intro">
-<h1 id="intro">Launch Canvas</h1>
-<p>Tell Lippy what you’re launching, then edit and save your creator page.</p>
-<form id="generate">
-<label for="brief">Creator brief</label>
-<textarea id="brief" required maxlength="1800" rows="5" placeholder="Describe your work, audience and the action you want visitors to take."></textarea>
-<button id="example" type="button" class="quiet">Try a sample brief</button>
-<label for="route">Where AI runs</label>
-<select id="route"><option value="device">Gemini Nano · on device only</option><option value="hybrid">Firebase · on device with cloud fallback</option><option value="cloud">Firebase · cloud only (direct)</option><option value="ollama">Ollama · local CPU</option></select>
-<label id="consent-row" hidden><input id="consent" type="checkbox"> Allow this brief to be processed by Firebase, including cloud inference</label>
-<label id="model-row" hidden>Installed Ollama model <select id="model"></select><button id="refresh" type="button" class="quiet">Refresh models</button></label>
-<p id="setup"></p>
-<button id="run">Generate draft</button>
-</form>
-</section>
-<section aria-labelledby="editor-heading">
-<h2 id="editor-heading">Page editor</h2>
-<form id="editor">
-<label>Title<input name="title" required maxlength="80"></label>
-<label>Tagline<input name="tagline" required maxlength="140"></label>
-<label>About<textarea name="about" required maxlength="650" rows="4"></textarea></label>
-<label>Call to action<input name="action" required maxlength="44"></label>
-<label>Palette<select name="palette"><option value="violet">Violet</option><option value="ocean">Ocean</option><option value="ember">Ember</option><option value="paper">Paper</option></select></label>
-<div class="actions"><button>Save on this device</button><button id="restore" type="button" class="quiet">Reopen saved page</button><button id="export" type="button" class="quiet">Export page JSON</button></div>
-</form>
-</section>
-<article id="preview" aria-labelledby="page-title">
-<p>Live preview</p><h2 id="page-title">Your page title</h2><p id="page-tagline"></p><p id="page-about"></p><span id="page-action" hidden></span>
-</article>
-<p role="status" id="status"></p>
+  <section aria-labelledby="intro">
+    <h1 id="intro">Launch Canvas</h1>
+    <p>Tell Lippy what you're launching. Floater routes your request, and the page designer turns it into a page you can shape and publish elsewhere.</p>
+    <form id="generate">
+      <label for="brief">Creator brief</label>
+      <textarea id="brief" required maxlength="1800" rows="5" placeholder="Describe your work, audience, visual vibe, and any public media or artwork links to feature."></textarea>
+      <div class="actions"><button id="example" type="button" class="quiet">Try a music sample</button><button id="example-art" type="button" class="quiet">Try an artist sample</button></div>
+      <label for="route">Where AI runs</label>
+      <select id="route"><option value="device">Gemini Nano � on device only</option><option value="hybrid">Firebase � on device with cloud fallback</option><option value="cloud">Firebase � cloud only (direct)</option><option value="ollama">Ollama � local CPU</option></select>
+      <label id="consent-row" hidden><input id="consent" type="checkbox"> Allow this brief to be processed by Firebase, including cloud inference</label>
+      <label id="model-row" hidden>Installed Ollama model <select id="model"></select><button id="refresh" type="button" class="quiet">Refresh models</button></label>
+      <p id="setup" aria-live="polite"></p>
+      <button id="run">Generate page design</button>
+    </form>
+  </section>
+  <section aria-labelledby="editor-heading">
+    <h2 id="editor-heading">Page designer</h2>
+    <form id="editor">
+      <label>Title<input name="title" required maxlength="80" value="Your page title"></label>
+      <label>Tagline<input name="tagline" required maxlength="140" value="Your next chapter starts here."></label>
+      <label>About<textarea name="about" required maxlength="650" rows="4">Tell visitors what you make and why it matters.</textarea></label>
+      <label>Call to action<input name="action" required maxlength="44" value="Explore my work"></label>
+      <div class="designer-grid">
+        <label>Page layout<select name="layout"><option value="editorial">Editorial</option><option value="spotlight">Spotlight</option><option value="grid">Creator grid</option><option value="split">Split stage</option></select></label>
+        <label>Palette<select name="palette"><option value="violet">Violet</option><option value="ocean">Ocean</option><option value="ember">Ember</option><option value="paper">Paper</option></select></label>
+        <label>Background<select name="background"><option value="solid">Solid</option><option value="aurora">Aurora glow</option><option value="sunset">Sunset glow</option><option value="paper">Paper grain</option></select></label>
+        <label>Typography<select name="font"><option value="system">Modern sans</option><option value="serif">Editorial serif</option><option value="rounded">Rounded</option><option value="mono">Monospaced</option></select></label>
+        <label>Widgets appear<select name="widgetPosition"><option value="below">Below the introduction</option><option value="left">Left side</option><option value="right">Right side</option></select></label>
+        <label>Widget width<select name="widgetWidth"><option value="compact">Compact</option><option value="balanced">Balanced</option><option value="wide">Wide</option></select></label>
+        <label>Motion<select name="animation"><option value="none">None</option><option value="fade">Fade in</option><option value="rise">Rise in</option></select></label>
+      </div>
+      <details><summary>Fine-tune colors and artwork</summary><div class="designer-grid">
+        <label>Background color<input name="backgroundColor" type="color" value="#19142b"></label>
+        <label>Text color<input name="textColor" type="color" value="#eee8ff"></label>
+        <label>Accent color<input name="accentColor" type="color" value="#c5adff"></label>
+        <label>Artwork URL<input name="artworkUrl" type="url" maxlength="600" placeholder="https://. direct image URL"></label>
+        <label>Button link<input name="actionUrl" type="url" maxlength="600" placeholder="https://. or mailto:."></label>
+        <label>Public livestream URL<input name="streamUrl" type="url" maxlength="600" placeholder="YouTube or Twitch channel/live URL"></label>
+      </div></details>
+      <div class="subsection"><div class="subsection-title"><h3>Page sections</h3><button id="add-section" class="quiet" type="button">Add section</button></div><div id="section-editor"></div></div>
+      <div class="subsection"><div class="subsection-title"><h3>Media embeds</h3><span>YouTube � Spotify � SoundCloud � Twitch</span></div>
+        <div id="media-form" class="media-form" role="group" aria-label="Add a media embed">
+          <label>Type<select id="media-provider"><option value="youtube">YouTube</option><option value="spotify">Spotify</option><option value="soundcloud">SoundCloud</option><option value="twitch">Twitch</option><option value="link">Website link</option></select></label>
+          <label>Label<input id="media-label" required maxlength="48" placeholder="New single"></label>
+          <label>Public URL<input id="media-url" type="url" required maxlength="600" placeholder="https://."></label>
+          <button id="media-add" type="button">Add media</button>
+        </div><div id="media-editor"></div>
+      </div>
+      <div class="actions"><button>Save complete design on this device</button><button id="restore" type="button" class="quiet">Reopen saved page</button><button id="export" type="button" class="quiet">Export page JSON</button></div>
+    </form>
+  </section>
+  <article id="preview" class="layout-editorial" aria-labelledby="page-title">
+    <p class="preview-label">Live page preview</p>
+    <nav id="page-nav" aria-label="Page sections"></nav>
+    <div class="hero">
+      <div class="hero-copy"><p id="page-kicker" class="preview-kicker">Creator page</p><h2 id="page-title">Your page title</h2><p id="page-tagline"></p><p id="page-about"></p><a id="page-action" class="page-action" hidden></a></div>
+      <img id="page-artwork" alt="" hidden>
+    </div>
+    <div class="page-body"><div id="page-sections" class="page-sections"></div><div id="page-widgets" class="page-widgets"><section id="stream-panel" class="widget stream-panel" hidden><h3>Live on air</h3><p>OBS-compatible stream embed � OBS remains your broadcast app.</p><div id="stream-embed"></div></section><section id="page-media" class="widget media-grid" aria-label="Featured media"></section></div></div>
+    <p id="page-credit" class="page-credit">Designed with SKYNZ Launch Canvas</p>
+  </article>
+  <p role="status" id="status" aria-live="polite"></p>
 </main>
 <script type="module" src="/src/main.js"></script>
 </body>
 </html>
+
