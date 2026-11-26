@@ -40,7 +40,11 @@ To configure another test project:
 
 The public Hosting deployment is live. The existing reCAPTCHA Enterprise site key is 40 characters, and App Check enforcement is enabled for Firebase AI Logic.
 
-A live direct cloud request returned a valid structured creator page through Firebase AI Logic. Launch Canvas identified the response as **Gemini · Firebase cloud**; the draft filled the editor and preview, saved locally, and was restored after a page reload. A separate hybrid-mode request executed Gemini Nano on device, but its output did not pass the structured page validator. Because Nano was available, Firebase's hybrid mode did not fall back to cloud for that request. The cloud-only route was added to make direct cloud verification available without mislabeling the hybrid result. No simulated responses were used.
+The project owner manually verified Gemini Nano on desktop Chrome with a new **Midnight Highway** brief. Nano generated an original page, populated the editor, applied the requested Ember palette, and rendered the live preview. The app reported: **“Draft ready · Gemini Nano · on device. Review it before saving.”** The project owner also reports Firebase AI Logic monitoring recorded a successful Gemini 3.5 Flash-Lite cloud inference at **2.25 seconds**.
+
+I independently exercised **Firebase · on device with cloud fallback** in a separate browser session with the required per-brief Firebase consent. The hybrid route returned a valid structured creator page and reported **“Draft ready · Gemini · Firebase cloud.”** The page was accepted into the editor and live preview with the requested Ember palette, saved on the device, restored after reload, and reopened successfully. The source configures this route with Firebase AI Logic `PREFER_ON_DEVICE`; this run therefore verified its automatic cloud fallback path. No simulated responses were used.
+
+App Check uses the existing 40-character reCAPTCHA Enterprise site key, and enforcement is enabled for Firebase AI Logic. The test project remains on the Spark plan; paid billing was not activated.
 
 Ollama remains a separate local route. Its independent live inference was not retested in this deployment session.
 
